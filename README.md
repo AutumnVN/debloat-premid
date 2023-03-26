@@ -1,6 +1,6 @@
 # Debloat PreMiD
 
-This is an non-electron version of [PreMiD](https://github.com/PreMiD/PreMiD) for Windows with only one core feature - Discord Presence.
+This is a non-electron version of [PreMiD](https://github.com/PreMiD/PreMiD) for Windows with only one core feature - Discord Presence.
 
 No electron, no installer, no tray icon, no file dialog, no settings, no updater.
 
