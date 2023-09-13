@@ -33,8 +33,6 @@ class RPCClient {
         ));
 
         this.client.login({ clientId: this.clientId }).catch(() => this.destroy());
-
-        console.log(`[RPC] Client ${this.clientId} created`);
     }
 
     setActivity(presenceData) {
@@ -42,32 +40,30 @@ class RPCClient {
 
         presenceData.presenceData.largeImageText = 'Debloat PreMiD v7.2.7';
 
-        if(!this.clientReady || !presenceData) return;
+        if (!this.clientReady || !presenceData) return;
 
         this.client.setActivity(presenceData.presenceData).catch(() => this.destroy());
-
-        console.log(`[RPC] Client ${this.clientId} set activity`);
     }
 
     clearActivity() {
         this.currentPresence = null;
 
-        if(!this.clientReady) return;
+        if (!this.clientReady) return;
 
         this.client.clearActivity().catch(() => this.destroy());
     }
 
     async destroy() {
         try {
-            if(this.clientReady) {
+            if (this.clientReady) {
                 this.client.clearActivity();
                 this.client.destroy();
             }
 
             rpcClients = rpcClients.filter(client => client.clientId !== this.clientId);
-
-            console.log(`[RPC] Client ${this.clientId} destroyed`);
-        } catch(err) { console.error(err); }
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
 
@@ -91,8 +87,7 @@ async function getDiscordUser() {
         const client = new Client({ transport: 'ipc' });
         client.login({ clientId: '503557087041683458' })
             .then(({ user }) => {
-                client.destroy()
-                    .then(() => resolve(user))
+                client.destroy().then(() => resolve(user))
             }).catch(err => reject(err));
     });
 }
@@ -100,14 +95,14 @@ async function getDiscordUser() {
 function setActivity(presence) {
     let client = rpcClients.find(client => client.clientId === presence.clientId);
 
-    if(!client) {
+    if (!client) {
         client = new RPCClient(presence.clientId);
         client.currentPresence = presence;
     } else client.setActivity(presence);
 }
 
 function clearActivity(clientId) {
-    if(clientId) {
+    if (clientId) {
         let client = rpcClients.find(client => client.clientId === clientId);
         client.clearActivity();
     } else rpcClients.forEach(client => client.clearActivity());
@@ -118,7 +113,6 @@ function socketError(err) {
 }
 
 function socketDisconnect() {
-    console.log('[SOCKET] Disconnected');
     rpcClients.forEach(client => client.destroy());
 }
 
